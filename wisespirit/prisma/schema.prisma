@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AirlinePolicy {
+  id                  Int      @id @default(autoincrement())
+  airlineName         String   @unique
+  minReusePercentage  Int?
+  discardBelow        Int?
+  canCombine          Boolean  @default(false)
+  policyText          String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model DecisionLog {
+  id           Int      @id @default(autoincrement())
+  airlineName  String
+  bottleType   String
+  volume       Int
+  decision     String
+  createdAt    DateTime @default(now())
+}
