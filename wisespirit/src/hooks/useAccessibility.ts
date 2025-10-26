@@ -8,16 +8,27 @@ interface AccessibilitySettings {
 }
 
 export function useAccessibility() {
-  const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    if (globalThis.window === undefined) return { enabled: false };
-    
-    const saved = globalThis.localStorage.getItem("accessibility-mode");
-    return saved ? JSON.parse(saved) : { enabled: false };
-  });
-
+  const [settings, setSettings] = useState<AccessibilitySettings>({ enabled: false });
   const [showToast, setShowToast] = useState(false);
   const hasShownPrompt = useRef(false);
   const mouseMoved = useRef(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Hydrate client-side settings from localStorage
+  useEffect(() => {
+    if (globalThis.window !== undefined) {
+      const saved = globalThis.localStorage.getItem("accessibility-mode");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setSettings(parsed);
+        } catch (e) {
+          console.warn("Failed to parse accessibility settings:", e);
+        }
+      }
+      setIsHydrated(true);
+    }
+  }, []);
 
   // Show activation prompt after 3 seconds if no mouse movement
   useEffect(() => {
