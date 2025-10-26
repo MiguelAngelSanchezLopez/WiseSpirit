@@ -7,7 +7,6 @@ async function main() {
   await prisma.airlinePolicy.deleteMany();
   
   await prisma.airlinePolicy.createMany({
-    skipDuplicates: true,
     data: [
       {
         airlineName: "Aeromexico",
