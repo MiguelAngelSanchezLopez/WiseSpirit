@@ -53,24 +53,53 @@ export default function HomePage() {
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <h1 className="text-3xl font-bold mb-6 text-blue-700">WiseSpirit</h1>
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
-        <input
-          className="w-full p-3 border rounded-lg shadow-sm"
-          placeholder="Airline name"
+        <select
+          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white"
           value={airlineName}
           onChange={(e) => setAirlineName(e.target.value)}
-        />
-        <input
-          className="w-full p-3 border rounded-lg shadow-sm"
-          placeholder="Bottle type"
+          required
+        >
+          <option value="">Select an airline...</option>
+          <option value="Aeromexico">Aeromexico</option>
+          <option value="British Airways">British Airways</option>
+          <option value="Delta Air Lines">Delta Air Lines</option>
+          <option value="Emirates">Emirates</option>
+          <option value="Lufthansa">Lufthansa</option>
+          <option value="Qatar Airways">Qatar Airways</option>
+          <option value="Singapore Airlines">Singapore Airlines</option>
+          <option value="Swiss International Air Lines">Swiss International Air Lines</option>
+        </select>
+        
+        <select
+          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white"
           value={bottleType}
           onChange={(e) => setBottleType(e.target.value)}
-        />
+          required
+        >
+          <option value="">Select bottle type...</option>
+          <option value="Champagne">Champagne</option>
+          <option value="Wine">Wine</option>
+          <option value="Beer">Beer</option>
+          <option value="Whiskey">Whiskey</option>
+          <option value="Vodka">Vodka</option>
+          <option value="Gin">Gin</option>
+          <option value="Rum">Rum</option>
+          <option value="Tequila">Tequila</option>
+          <option value="Brandy">Brandy</option>
+          <option value="Cognac">Cognac</option>
+          <option value="Premium Scotch">Premium Scotch</option>
+          <option value="Single Malt">Single Malt</option>
+        </select>
+        
         <input
-          className="w-full p-3 border rounded-lg shadow-sm"
+          className="w-full p-3 border rounded-lg shadow-sm placeholder:text-gray-500 text-gray-900"
           placeholder="Remaining % (0-100)"
           type="number"
+          min="0"
+          max="100"
           value={volume}
           onChange={(e) => setVolume(Number(e.target.value))}
+          required
         />
         <button className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors">
           Get Decision

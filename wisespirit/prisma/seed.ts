@@ -13,15 +13,45 @@ async function main() {
         minReusePercentage: 40,
         discardBelow: 30,
         canCombine: true,
+        policyText: `AEROMEXICO CATERING SERVICES - ALCOHOLIC BEVERAGE HANDLING STANDARD
+
+Operational Directive 3.5: Partial Bottle Management
+- REUSE Standard: Bottles retaining 40% or more of original volume are eligible for reseal and return to inventory
+- COMBINE Authorization: Partial bottles containing between 30% and 39% volume may be consolidated with identical products (same brand, type, production date) requiring shift supervisor approval
+- DISCARD Mandate: Any bottle containing less than 30% volume must be immediately removed from circulation and disposed through approved waste channels
+- Mexican Spirits Exception: Premium tequila and mezcal bottles (defined as >$80 USD retail value) may be evaluated for reuse down to 25% volume with director-level approval
+- Security Protocol: All processed bottles must have tamper-evident seals applied with processing date, staff initials, and supervisor signature
+- Quality Assurance: Visual inspection mandatory for all bottles; check for cloudiness, sediment, oxidation signs, or any container defects
+- Documentation: All actions logged in Aeromexico Catering Management System with barcode verification, volume measurement, and decision rationale
+- Storage: Climate-controlled secured storage area, separate from full-bottle inventory, organized by processing date for FIFO rotation
+
+Compliance: All procedures documented for audit trail. Unauthorized combination without approval results in disciplinary action.`,
       },
       {
         airlineName: "Lufthansa",
         minReusePercentage: 50,
         discardBelow: 20,
         canCombine: false,
+        policyText: `LUFTHANSA GROUP CATERING - ALCOHOLIC BEVERAGE OPERATIONS MANUAL
+
+German Quality Standards for Partial Consumption Handling:
+- REUSE Authorization: Bottles maintaining 50% or greater volume after service are approved for resealing and restocking for future flights
+- Combining Restriction: Lufthansa strictly prohibits combining partial bottles to maintain German quality standards, product integrity, and comply with EU food safety regulations
+- DISCARD Requirement: Bottles containing less than 20% of original volume must be immediately removed from service and discarded through certified waste management contractors
+- Premium Wine Exception: Exceptional vintage wines (defined as >€120 retail per bottle or listed in wine catalog) may undergo individual evaluation by catering quality manager for potential reuse down to 30% volume with full documentation
+- Tamper-Evident Seals: All reused bottles require official Lufthansa security seals with QR code linking to complete processing record including date, shift, staff ID, and supervisory sign-off
+- Digital Traceability: Mandatory entry in Lufthansa Catering Information System (LCIS) including barcode scan, photograph of seal, volume measurement, and quality inspection checklist completion
+- Storage Compliance: Processed bottles stored in German TÜV-certified climate-controlled facility meeting EU food safety standards, separated by flight assignment category
+- Visual and Sensory Inspection: All bottles undergo mandatory visual inspection for clarity, color consistency, and absence of foreign particles; olfactory check for any off-odors or oxidation signs
+
+Regulatory Compliance: All procedures compliant with EU Regulation 852/2004 on food hygiene. Unauthorized combination is considered serious food safety violation.
+Audit Requirements: Complete documentation trail maintained for minimum 2 years per German aviation catering regulations.`,
       },
       {
         airlineName: "British Airways",
+        minReusePercentage: 60,
+        discardBelow: 30,
+        canCombine: true,
         policyText: `ALCOHOL BOTTLE HANDLING POLICY - BRITISH AIRWAYS CATERING SERVICES
 
 Section 4.2: Partial Bottle Management
@@ -36,6 +66,9 @@ Quality Control: Any bottle showing signs of contamination, tampering, or improp
       },
       {
         airlineName: "Emirates",
+        minReusePercentage: 70,
+        discardBelow: 25,
+        canCombine: true,
         policyText: `EMIRATES IN-FLIGHT BEVERAGE POLICY - PARTIAL CONSUMPTION
 
 1. Reuse Criteria: Any alcoholic beverage bottle with 70% or more of its original volume remaining may be resealed and reused on subsequent flights.
@@ -47,6 +80,9 @@ Quality Control: Any bottle showing signs of contamination, tampering, or improp
       },
       {
         airlineName: "Singapore Airlines",
+        minReusePercentage: 50,
+        discardBelow: 20,
+        canCombine: false,
         policyText: `SINGAPORE AIRLINES - ALCOHOL SERVICE GUIDELINES
 
 - Bottles with 50% or more liquid remaining are eligible for reuse.
@@ -58,6 +94,9 @@ Quality Control: Any bottle showing signs of contamination, tampering, or improp
       },
       {
         airlineName: "Qatar Airways",
+        minReusePercentage: 65,
+        discardBelow: 35,
+        canCombine: true,
         policyText: `QATAR AIRWAYS - ALCOHOLIC BEVERAGE MANAGEMENT STANDARDS
 
 Section 3: Partial Bottle Handling Procedures
@@ -74,6 +113,9 @@ Compliance: All alcohol handling decisions are subject to audit by quality assur
       },
       {
         airlineName: "Swiss International Air Lines",
+        minReusePercentage: 55,
+        discardBelow: 22,
+        canCombine: false,
         policyText: `SWISS INTERNATIONAL AIR LINES - ALCOHOLIC BEVERAGE OPERATIONS MANUAL
 
 Partial Consumption Policy:
@@ -91,6 +133,9 @@ Traceability: Complete audit trail required for all alcohol handling decisions i
       },
       {
         airlineName: "Delta Air Lines",
+        minReusePercentage: 60,
+        discardBelow: 25,
+        canCombine: true,
         policyText: `DELTA AIR LINES - ALCOHOLIC BEVERAGE INVENTORY MANAGEMENT POLICY
 
 Guideline 5.3: Handling of Partially Consumed Products
