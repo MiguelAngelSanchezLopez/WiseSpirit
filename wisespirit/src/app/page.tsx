@@ -106,14 +106,8 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Header Section */}
-      <div className="text-center mb-8">
-        <h1 className="text-7xl font-bold mb-4 gradient-text tracking-tight">
-          WiseSpirit
-        </h1>
-        <p className="text-lg text-gray-600 mb-4">AI-Powered Bottle Handling Assistant</p>
-        
-        {/* Accessibility Toggle */}
+      {/* Accessibility Toggle */}
+      <div className="top-4 right-4 ">
         <button
           onClick={toggleAccessibility}
           onFocus={() => isEnabled && speakLabel("Toggle voice guidance", "button")}
@@ -129,10 +123,17 @@ export default function HomePage() {
         </button>
       </div>
 
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <h1 className="text-[70px] font-bold mb-4 gradient-text tracking-tight">
+          WiseSpirit
+        </h1>
+      </div>
+
       {/* Input Fields Container */}
-      <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-10 border border-gray-100">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
         <div className="flex flex-col">
-          <label htmlFor="airline-select" className="text-gray-700 font-semibold mb-2">
+          <label htmlFor="airline-select" className="text-gray-700 font-semibold mb-2 text-center">
             Airline
           </label>
           <select
@@ -157,7 +158,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="bottle-select" className="text-gray-700 font-semibold mb-2">
+          <label htmlFor="bottle-select" className="text-gray-700 font-semibold mb-2 text-center">
             Bottle Type
           </label>
           <select
@@ -186,7 +187,7 @@ export default function HomePage() {
         </div>
         
         <div className="flex flex-col">
-          <label htmlFor="volume-input" className="text-gray-700 font-semibold mb-2">
+          <label htmlFor="volume-input" className="text-gray-700 font-semibold mb-2 text-center">
             Remaining Volume (%)
           </label>
           <input
@@ -211,55 +212,55 @@ export default function HomePage() {
           onFocus={() => isEnabled && speakLabel("Get Decision", "button")}
           aria-busy={isSubmitting}
         >
-          {isSubmitting ? "⏳ Processing..." : "🚀 Get Decision"}
+          {isSubmitting ? " Processing..." : " Get Decision"}
         </button>
       </form>
 
       {decisionData && (
         <div className="mt-8 w-full max-w-2xl" aria-live="polite" aria-label="Decision results">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-bold gradient-text mb-3">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">
                 Decision: {decisionData.action || decisionData.decision}
               </h2>
               {decisionData.confidence && (
-                <span className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${getConfidenceColor(decisionData.confidence)}`}>
+                <span className={`text-sm font-medium ${getConfidenceColor(decisionData.confidence)}`}>
                   Confidence: {decisionData.confidence}
                 </span>
               )}
             </div>
 
             {decisionData.reasoning && (
-              <div className="mb-6 p-5 bg-blue-50 rounded-xl border border-blue-100">
-                <h3 className="font-semibold text-blue-800 mb-2 text-lg">📊 Reasoning</h3>
-                <p className="text-blue-900">{decisionData.reasoning}</p>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2"> Reasoning</h3>
+                <p className="text-gray-600">{decisionData.reasoning}</p>
               </div>
             )}
 
             {decisionData.operatorInstructions && (
-              <div className="mb-6 p-5 bg-cyan-50 rounded-xl border border-cyan-100">
-                <h3 className="font-semibold text-cyan-800 mb-2 text-lg">📋 Instructions</h3>
-                <p className="text-cyan-900 whitespace-pre-line">{decisionData.operatorInstructions}</p>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2"> Instructions</h3>
+                <p className="text-gray-600 whitespace-pre-line">{decisionData.operatorInstructions}</p>
               </div>
             )}
 
             {decisionData.safetyNotes && (
-              <div className="mb-6 p-5 bg-amber-50 rounded-xl border-l-4 border-amber-400">
-                <h3 className="font-semibold text-amber-800 mb-2 text-lg">⚠️ Safety Notes</h3>
-                <p className="text-amber-900">{decisionData.safetyNotes}</p>
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
+                <h3 className="font-semibold text-yellow-800 mb-1">⚠️ Safety Notes</h3>
+                <p className="text-yellow-700">{decisionData.safetyNotes}</p>
               </div>
             )}
 
             {decisionData.nextSteps && (
-              <div className="mb-6 p-5 bg-purple-50 rounded-xl border border-purple-100">
-                <h3 className="font-semibold text-purple-800 mb-2 text-lg">➡️ Next Steps</h3>
-                <p className="text-purple-900">{decisionData.nextSteps}</p>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2"> Next Steps</h3>
+                <p className="text-gray-600">{decisionData.nextSteps}</p>
               </div>
             )}
 
             {audioUrl && (
               <div className="text-center">
-                <audio controls src={audioUrl} className="mt-4" />
+                <audio controls src={audioUrl} className="mt-4" aria-label="Decision audio feedback" aria-describedby="decision-audio-description" />
               </div>
             )}
           </div>
