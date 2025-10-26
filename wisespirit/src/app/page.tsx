@@ -106,7 +106,7 @@ export default function HomePage() {
         </div>
       )}
       
-      <div className="flex justify-between items-center w-full max-w-md mb-4">
+      <div className="w-full max-w-md mb-6 flex justify-between items-center">
         <h1 className="text-3xl font-bold text-blue-700">WiseSpirit</h1>
         <button
           onClick={toggleAccessibility}
@@ -118,7 +118,7 @@ export default function HomePage() {
           {isEnabled ? "🔊 Voice On" : "🔇 Voice Off"}
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md" aria-label="Bottle decision form">
+      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
         <label htmlFor="airline-select" className="sr-only">
           Select airline
         </label>
@@ -130,7 +130,6 @@ export default function HomePage() {
           onFocus={() => isEnabled && speakLabel("Airline", "dropdown")}
           required
           aria-label="Select airline"
-          aria-required="true"
         >
           <option value="">Select an airline...</option>
           <option value="Aeromexico">Aeromexico</option>
@@ -154,7 +153,6 @@ export default function HomePage() {
           onFocus={() => isEnabled && speakLabel("Bottle type", "dropdown")}
           required
           aria-label="Select bottle type"
-          aria-required="true"
         >
           <option value="">Select bottle type...</option>
           <option value="Champagne">Champagne</option>
@@ -185,8 +183,7 @@ export default function HomePage() {
           onChange={(e) => setVolume(Number(e.target.value))}
           onFocus={() => isEnabled && speakLabel("Volume", "number input")}
           required
-          aria-label="Enter remaining volume percentage between 0 and 100"
-          aria-required="true"
+          aria-label="Enter remaining volume percentage"
         />
         <button 
           className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -200,54 +197,54 @@ export default function HomePage() {
       </form>
 
       {decisionData && (
-        <section className="mt-8 w-full max-w-2xl" aria-live="polite" aria-label="Decision results">
+        <div className="mt-8 w-full max-w-2xl" aria-live="polite" aria-label="Decision results">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800" id="decision-title">
+              <h2 className="text-2xl font-bold text-gray-800">
                 Decision: {decisionData.action || decisionData.decision}
               </h2>
               {decisionData.confidence && (
-                <span className={`text-sm font-medium ${getConfidenceColor(decisionData.confidence)}`} aria-label={`Confidence level: ${decisionData.confidence}`}>
+                <span className={`text-sm font-medium ${getConfidenceColor(decisionData.confidence)}`}>
                   Confidence: {decisionData.confidence}
                 </span>
               )}
             </div>
 
             {decisionData.reasoning && (
-              <section className="mb-4" aria-labelledby="reasoning-heading">
-                <h3 id="reasoning-heading" className="font-semibold text-gray-700 mb-2">Reasoning:</h3>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Reasoning:</h3>
                 <p className="text-gray-600">{decisionData.reasoning}</p>
-              </section>
+              </div>
             )}
 
             {decisionData.operatorInstructions && (
-              <section className="mb-4" aria-labelledby="instructions-heading">
-                <h3 id="instructions-heading" className="font-semibold text-gray-700 mb-2">Instructions:</h3>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Instructions:</h3>
                 <p className="text-gray-600 whitespace-pre-line">{decisionData.operatorInstructions}</p>
-              </section>
+              </div>
             )}
 
             {decisionData.safetyNotes && (
-              <section className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400" aria-labelledby="safety-heading" role="alert">
-                <h3 id="safety-heading" className="font-semibold text-yellow-800 mb-1">Safety Notes:</h3>
+              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
+                <h3 className="font-semibold text-yellow-800 mb-1">Safety Notes:</h3>
                 <p className="text-yellow-700">{decisionData.safetyNotes}</p>
-              </section>
+              </div>
             )}
 
             {decisionData.nextSteps && (
-              <section className="mb-4" aria-labelledby="nextsteps-heading">
-                <h3 id="nextsteps-heading" className="font-semibold text-gray-700 mb-2">Next Steps:</h3>
+              <div className="mb-4">
+                <h3 className="font-semibold text-gray-700 mb-2">Next Steps:</h3>
                 <p className="text-gray-600">{decisionData.nextSteps}</p>
-              </section>
+              </div>
             )}
 
             {audioUrl && (
               <div className="text-center">
-                <audio controls src={audioUrl} className="mt-4" aria-label="Decision audio feedback" />
+                <audio controls src={audioUrl} className="mt-4" />
               </div>
             )}
           </div>
-        </section>
+        </div>
       )}
     </main>
   );
