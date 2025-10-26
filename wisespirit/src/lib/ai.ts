@@ -72,7 +72,7 @@ ${policy.policyText ? `- Additional policy: ${policy.policyText}` : ''}
 
 Provide your response as JSON with this exact structure:
 {
-  "action": "REUSE|DISCARD|COMBINE|HOLD_FOR_REVIEW",
+  "action": "REUSE|DISCARD|COMBINE|HOLD FOR REVIEW",
   "confidence": "HIGH|MEDIUM|LOW",
   "reasoning": "Brief explanation of why this decision was made",
   "operatorInstructions": "Step-by-step instructions for the operator",
