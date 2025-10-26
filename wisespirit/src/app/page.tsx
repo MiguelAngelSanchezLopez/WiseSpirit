@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAccessibility } from "@/hooks/useAccessibility";
 
 interface DecisionData {
   action?: string;
@@ -17,26 +18,67 @@ export default function HomePage() {
   const [volume, setVolume] = useState(0);
   const [decisionData, setDecisionData] = useState<DecisionData | null>(null);
   const [audioUrl, setAudioUrl] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { announce, toggleAccessibility, isEnabled } = useAccessibility();
+
+  // Announce airline selection
+  useEffect(() => {
+    if (airlineName && isEnabled) {
+      announce(`Airline selected: ${airlineName}`);
+    }
+  }, [airlineName, announce, isEnabled]);
+
+  // Announce bottle type selection
+  useEffect(() => {
+    if (bottleType && isEnabled) {
+      announce(`Bottle type selected: ${bottleType}`);
+    }
+  }, [bottleType, announce, isEnabled]);
+
+  // Announce volume changes
+  useEffect(() => {
+    if (volume > 0 && isEnabled) {
+      announce(`Volume set to ${volume} percent`);
+    }
+  }, [volume, announce, isEnabled]);
+
+  // Announce decision when it arrives
+  useEffect(() => {
+    if (decisionData && isEnabled) {
+      const action = decisionData.action || decisionData.decision || "Unknown";
+      announce(`Decision: ${action}`);
+    }
+  }, [decisionData, announce, isEnabled]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const res = await fetch("/api/decision", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ airlineName, bottleType, volume }),
-    });
-    const data = await res.json();
-    setDecisionData(data);
+    setIsSubmitting(true);
+    if (isEnabled) {
+      announce("Processing decision, please wait");
+    }
 
-    const actionText = data.action || data.decision;
-    if (actionText) {
-      const voiceRes = await fetch("/api/voice", {
+    try {
+      const res = await fetch("/api/decision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: `Action: ${actionText}` }),
+        body: JSON.stringify({ airlineName, bottleType, volume }),
       });
-      const blob = await voiceRes.blob();
-      setAudioUrl(URL.createObjectURL(blob));
+      const data = await res.json();
+      setDecisionData(data);
+
+      const actionText = data.action || data.decision;
+      if (actionText) {
+        const voiceRes = await fetch("/api/voice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: `Action: ${actionText}` }),
+        });
+        const blob = await voiceRes.blob();
+        setAudioUrl(URL.createObjectURL(blob));
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -50,14 +92,30 @@ export default function HomePage() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <h1 className="text-3xl font-bold mb-6 text-blue-700">WiseSpirit</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4" role="main" aria-label="WiseSpirit decision maker">
+      <div className="flex justify-between items-center w-full max-w-md mb-4">
+        <h1 className="text-3xl font-bold text-blue-700">WiseSpirit</h1>
+        <button
+          onClick={toggleAccessibility}
+          className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Toggle voice guidance"
+          aria-pressed={isEnabled}
+        >
+          {isEnabled ? "🔊 Voice On" : "🔇 Voice Off"}
+        </button>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md" aria-label="Bottle decision form">
+        <label htmlFor="airline-select" className="sr-only">
+          Select airline
+        </label>
         <select
-          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white"
+          id="airline-select"
+          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={airlineName}
           onChange={(e) => setAirlineName(e.target.value)}
           required
+          aria-label="Select airline"
+          aria-required="true"
         >
           <option value="">Select an airline...</option>
           <option value="Aeromexico">Aeromexico</option>
@@ -70,11 +128,17 @@ export default function HomePage() {
           <option value="Swiss International Air Lines">Swiss International Air Lines</option>
         </select>
         
+        <label htmlFor="bottle-select" className="sr-only">
+          Select bottle type
+        </label>
         <select
-          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white"
+          id="bottle-select"
+          className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={bottleType}
           onChange={(e) => setBottleType(e.target.value)}
           required
+          aria-label="Select bottle type"
+          aria-required="true"
         >
           <option value="">Select bottle type...</option>
           <option value="Champagne">Champagne</option>
@@ -91,8 +155,12 @@ export default function HomePage() {
           <option value="Single Malt">Single Malt</option>
         </select>
         
+        <label htmlFor="volume-input" className="sr-only">
+          Enter remaining volume percentage
+        </label>
         <input
-          className="w-full p-3 border rounded-lg shadow-sm placeholder:text-gray-500 text-gray-900"
+          id="volume-input"
+          className="w-full p-3 border rounded-lg shadow-sm placeholder:text-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Remaining % (0-100)"
           type="number"
           min="0"
@@ -100,52 +168,62 @@ export default function HomePage() {
           value={volume}
           onChange={(e) => setVolume(Number(e.target.value))}
           required
+          aria-label="Enter remaining volume percentage between 0 and 100"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={volume}
+          aria-required="true"
         />
-        <button className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors">
-          Get Decision
+        <button 
+          className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          type="submit"
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+        >
+          {isSubmitting ? "Processing..." : "Get Decision"}
         </button>
       </form>
 
       {decisionData && (
-        <div className="mt-8 w-full max-w-2xl">
+        <div className="mt-8 w-full max-w-2xl" role="region" aria-live="polite" aria-label="Decision results">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-2xl font-bold text-gray-800" id="decision-title">
                 Decision: {decisionData.action || decisionData.decision}
               </h2>
               {decisionData.confidence && (
-                <span className={`text-sm font-medium ${getConfidenceColor(decisionData.confidence)}`}>
+                <span className={`text-sm font-medium ${getConfidenceColor(decisionData.confidence)}`} aria-label={`Confidence level: ${decisionData.confidence}`}>
                   Confidence: {decisionData.confidence}
                 </span>
               )}
             </div>
 
             {decisionData.reasoning && (
-              <div className="mb-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Reasoning:</h3>
+              <section className="mb-4" aria-labelledby="reasoning-heading">
+                <h3 id="reasoning-heading" className="font-semibold text-gray-700 mb-2">Reasoning:</h3>
                 <p className="text-gray-600">{decisionData.reasoning}</p>
-              </div>
+              </section>
             )}
 
             {decisionData.operatorInstructions && (
-              <div className="mb-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Instructions:</h3>
+              <section className="mb-4" aria-labelledby="instructions-heading">
+                <h3 id="instructions-heading" className="font-semibold text-gray-700 mb-2">Instructions:</h3>
                 <p className="text-gray-600 whitespace-pre-line">{decisionData.operatorInstructions}</p>
-              </div>
+              </section>
             )}
 
             {decisionData.safetyNotes && (
-              <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400">
-                <h3 className="font-semibold text-yellow-800 mb-1">Safety Notes:</h3>
+              <section className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400" aria-labelledby="safety-heading" role="alert">
+                <h3 id="safety-heading" className="font-semibold text-yellow-800 mb-1">Safety Notes:</h3>
                 <p className="text-yellow-700">{decisionData.safetyNotes}</p>
-              </div>
+              </section>
             )}
 
             {decisionData.nextSteps && (
-              <div className="mb-4">
-                <h3 className="font-semibold text-gray-700 mb-2">Next Steps:</h3>
+              <section className="mb-4" aria-labelledby="nextsteps-heading">
+                <h3 id="nextsteps-heading" className="font-semibold text-gray-700 mb-2">Next Steps:</h3>
                 <p className="text-gray-600">{decisionData.nextSteps}</p>
-              </div>
+              </section>
             )}
 
             {audioUrl && (
