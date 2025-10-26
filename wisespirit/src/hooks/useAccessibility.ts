@@ -10,9 +10,9 @@ interface AccessibilitySettings {
 
 export function useAccessibility() {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    if (typeof window === "undefined") return { enabled: false, keyboardMode: false };
+    if (typeof globalThis.window === "undefined") return { enabled: false, keyboardMode: false };
     
-    const saved = localStorage.getItem("accessibility-mode");
+    const saved = globalThis.localStorage.getItem("accessibility-mode");
     return saved ? JSON.parse(saved) : { enabled: false, keyboardMode: false };
   });
 
@@ -30,12 +30,12 @@ export function useAccessibility() {
       }
     };
 
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("mousedown", handleMouseDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("keydown", handleKeyDown);
+      globalThis.removeEventListener("mousedown", handleMouseDown);
+      globalThis.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -44,8 +44,8 @@ export function useAccessibility() {
     if (isKeyboardNavigation && !settings.enabled) {
       setSettings((prev) => {
         const updated = { ...prev, enabled: true };
-        if (typeof window !== "undefined") {
-          localStorage.setItem("accessibility-mode", JSON.stringify(updated));
+        if (typeof globalThis.window !== "undefined") {
+          globalThis.localStorage.setItem("accessibility-mode", JSON.stringify(updated));
         }
         return updated;
       });
@@ -61,8 +61,8 @@ export function useAccessibility() {
   const toggleAccessibility = useCallback(() => {
     const updated = { ...settings, enabled: !settings.enabled };
     setSettings(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("accessibility-mode", JSON.stringify(updated));
+    if (typeof globalThis.window !== "undefined") {
+      globalThis.localStorage.setItem("accessibility-mode", JSON.stringify(updated));
     }
     if (updated.enabled) {
       speak("Accessibility mode enabled");

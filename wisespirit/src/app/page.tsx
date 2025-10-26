@@ -169,9 +169,6 @@ export default function HomePage() {
           onChange={(e) => setVolume(Number(e.target.value))}
           required
           aria-label="Enter remaining volume percentage between 0 and 100"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={volume}
           aria-required="true"
         />
         <button 
@@ -185,7 +182,7 @@ export default function HomePage() {
       </form>
 
       {decisionData && (
-        <div className="mt-8 w-full max-w-2xl" role="region" aria-live="polite" aria-label="Decision results">
+        <section className="mt-8 w-full max-w-2xl" aria-live="polite" aria-label="Decision results">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="text-center mb-4">
               <h2 className="text-2xl font-bold text-gray-800" id="decision-title">
@@ -232,7 +229,7 @@ export default function HomePage() {
               </div>
             )}
           </div>
-        </div>
+        </section>
       )}
     </main>
   );
