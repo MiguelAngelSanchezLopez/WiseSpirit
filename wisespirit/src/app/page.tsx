@@ -20,28 +20,28 @@ export default function HomePage() {
   const [audioUrl, setAudioUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { announce, toggleAccessibility, isEnabled } = useAccessibility();
+  const { announce, speakLabel, speakChange, toggleAccessibility, isEnabled, showToast, setShowToast } = useAccessibility();
 
-  // Announce airline selection
+  // Announce airline selection when it changes
   useEffect(() => {
     if (airlineName && isEnabled) {
-      announce(`Airline selected: ${airlineName}`);
+      speakChange("Airline", airlineName);
     }
-  }, [airlineName, announce, isEnabled]);
+  }, [airlineName, speakChange, isEnabled]);
 
-  // Announce bottle type selection
+  // Announce bottle type selection when it changes
   useEffect(() => {
     if (bottleType && isEnabled) {
-      announce(`Bottle type selected: ${bottleType}`);
+      speakChange("Bottle type", bottleType);
     }
-  }, [bottleType, announce, isEnabled]);
+  }, [bottleType, speakChange, isEnabled]);
 
   // Announce volume changes
   useEffect(() => {
     if (volume > 0 && isEnabled) {
-      announce(`Volume set to ${volume} percent`);
+      speakChange("Volume", `${volume} percent`);
     }
-  }, [volume, announce, isEnabled]);
+  }, [volume, speakChange, isEnabled]);
 
   // Announce decision when it arrives
   useEffect(() => {
@@ -93,10 +93,24 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4" role="main" aria-label="WiseSpirit decision maker">
+      {showToast && (
+        <div className="fixed top-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-3">
+          <span>Accessibility mode available — press A to enable</span>
+          <button
+            onClick={() => setShowToast(false)}
+            className="text-white hover:text-gray-200 font-bold"
+            aria-label="Close notification"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      
       <div className="flex justify-between items-center w-full max-w-md mb-4">
         <h1 className="text-3xl font-bold text-blue-700">WiseSpirit</h1>
         <button
           onClick={toggleAccessibility}
+          onFocus={() => isEnabled && speakLabel("Toggle voice guidance", "button")}
           className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Toggle voice guidance"
           aria-pressed={isEnabled}
@@ -113,6 +127,7 @@ export default function HomePage() {
           className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={airlineName}
           onChange={(e) => setAirlineName(e.target.value)}
+          onFocus={() => isEnabled && speakLabel("Airline", "dropdown")}
           required
           aria-label="Select airline"
           aria-required="true"
@@ -136,6 +151,7 @@ export default function HomePage() {
           className="w-full p-3 border rounded-lg shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={bottleType}
           onChange={(e) => setBottleType(e.target.value)}
+          onFocus={() => isEnabled && speakLabel("Bottle type", "dropdown")}
           required
           aria-label="Select bottle type"
           aria-required="true"
@@ -167,6 +183,7 @@ export default function HomePage() {
           max="100"
           value={volume}
           onChange={(e) => setVolume(Number(e.target.value))}
+          onFocus={() => isEnabled && speakLabel("Volume", "number input")}
           required
           aria-label="Enter remaining volume percentage between 0 and 100"
           aria-required="true"
@@ -175,6 +192,7 @@ export default function HomePage() {
           className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           type="submit"
           disabled={isSubmitting}
+          onFocus={() => isEnabled && speakLabel("Get Decision", "button")}
           aria-busy={isSubmitting}
         >
           {isSubmitting ? "Processing..." : "Get Decision"}
